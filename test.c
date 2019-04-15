@@ -32,8 +32,7 @@
 
   void remplir(int T[], int n)
   {
-    int i;
-    for(i=0 ; i<n ; i++)
+    for(int i=0 ; i<n ; i++)
     {
       T[i]=4;
     }
@@ -84,8 +83,8 @@
   int changement_plateau_joueur (int joueur[], int ordi[], int n)
   {
     int graines;
-    int case_joueur=choix_joueur(joueur,n);
-    int i=n-1;
+    int case_joueur=choix_joueur(joueur,n); // [1,6]
+    int i=n-1; // i = 5 ; n = 6
     
     graines=joueur[case_joueur-1];
     joueur[case_joueur-1]=0;
