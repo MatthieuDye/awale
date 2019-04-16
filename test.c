@@ -84,7 +84,8 @@
   {
     int graines;
     int case_joueur=choix_joueur(joueur,n); // [1,6]
-    int i=n-1; // i = 5 ; n = 6
+    int case_depart=case_joueur-1; //[1,6]
+    int cpt=0;
     
     graines=joueur[case_joueur-1];
     joueur[case_joueur-1]=0;
@@ -92,39 +93,43 @@
     while(graines!=0)
     {
         //tableau joueur
-      while((case_joueur<=n)&&(graines!=0))
+      while((case_joueur<n)&&(graines!=0))
       {
-       joueur[case_joueur]=joueur[case_joueur]+1;
-       graines--;
-       case_joueur++;
-     }
+        if((cpt=!0)&&(case_joueur==case_depart))
+        {
+          printf("WOODELINE A TORD\n");
+          case_joueur++;
+        } else
+        {
+          joueur[case_joueur]=joueur[case_joueur]+1;
+          graines--;
+          case_joueur++;
+        }
+      }
      if(graines==0)
      {
 
       return -1;
-    }
+      }
     else
     {
   	  //tableau ordi
-     while((i>0)&&(graines!=0))
+     while((case_joueur>1)&&(graines!=0))
      {
-       ordi[i]=ordi[i]+1;
+       ordi[case_joueur-1]=ordi[case_joueur-1]+1;
        graines--;
-       i--;
+       case_joueur--;
      }
      if(graines==0)
      {
-       return i+2;
-     }
-
-     else
-     { 
-       i=n;
-       case_joueur=0;
+       return case_joueur;
+     } else
+     {
+      cpt=1;
      }
    }
-  }
-  }
+ }
+}
 
   int changement_plateau_ordi (int joueur[], int ordi[], int n)
   {
