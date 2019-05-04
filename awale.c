@@ -47,7 +47,7 @@ T[i]=4;
 int choix_joueur(int T[], int n)
 {
 int i;
-printf("C'est a vous de jouer !\nChoisissez une case :");
+printf("C'est a vous de jouer !\nChoisissez une case (attention ce doit être un chiffre entre 1 et 6) :");
 scanf("%d",&i);
 
 while((i>6)||(i<1))
