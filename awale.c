@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #define N 6
+#define version 0.0.1
 
 /*  #define bleu "\033[1;34m"
     #define rouge "\033[1;31m"*/
