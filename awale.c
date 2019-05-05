@@ -1015,7 +1015,11 @@ int main()
 
 		printf("\n\nQuel niveau voulez-vous ? Tapez 0,1 ou 2.\n\033[1;34mNiveau choisi : \033[00m");
 		scanf("%d",&choix_niveau);
-
+		while (choix_niveau<0 || choix_niveau>2)
+		{
+			printf("\033[1;31mVeuillez choisir un niveau entre 0 et 2.\033[00m\nNiveau choisi : ");
+			scanf("%d",&choix_niveau);
+		}
 		//Le joueur choisit qui commence 
 		printf ("\n\nVoulez-vous commencer ? Si oui tapez 1, sinon tapez 0.\n\033[1;34mChoix : \033[00m");
 		scanf("%d", &compteur);
