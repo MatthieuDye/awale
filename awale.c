@@ -739,32 +739,32 @@ int main()
 	int ordi[N];
 	int case_joueur;
 	int a;
-  int case_ordi;
-  int grenier_joueur=0;
-  int grenier_ordi=0;
-  int compteur =0 ;
-  int fj=1;
-  int nb_coups ;
-  int rejouer=1;
-  int affichage_nvx_plateau;
-  int menu;
-  char pause;
-  int choix_niveau;
+	int case_ordi;
+	int grenier_joueur=0;
+	int grenier_ordi=0;
+	int compteur =0 ;
+	int fj=1;
+	int nb_coups ;
+	int rejouer=1;
+	int affichage_nvx_plateau;
+	int menu;
+	char pause;
+	int choix_niveau;
 
-  system("clear");
-  printf ("\n\t\t\t \033[1;34m Bienvenue dans le jeu Awale ! \033[1;34m \n") ;
-  printf("\nMENU\n");
-  printf("\n| Tapez 1 | Lire les règles  \n");
-  printf("| Tapez 2 | Voir une demonsration  \n");
-  printf("| Tapez 3 | Jouer  \n");
-  printf("| Tapez 4 | Quitter  \n");
+	system("clear");
+  	printf ("\n\t\t\t \033[1;34m Bienvenue dans le jeu Awale ! \033[1;34m \n") ;
+  	printf("\nMENU\n");
+  	printf("\n| Tapez 1 | Lire les règles  \n");
+  	printf("| Tapez 2 | Voir une demonsration  \n");
+  	printf("| Tapez 3 | Jouer  \n");
+  	printf("| Tapez 4 | Quitter  \n");
 
-  printf("\nChoix : ");
-  scanf("%d",&menu);
+  	printf("\nChoix : ");
+  	scanf("%d",&menu);
 
-  //REMPLIT TABLEAUX
-  remplir(joueur,N);
-  remplir(ordi,N);
+  //REMPLISSAGE TABLEAUX
+  	remplir(joueur,N);
+  	remplir(ordi,N);
 
   /*switch (menu) {
   	case 1:
@@ -781,7 +781,8 @@ int main()
   	//
   }*/
 
-  if(menu==1){
+  if(menu==1)
+  {
   	//AFFICHAGE REGLE DU JEU
     printf("\nVoici les regles du jeu :\n\nJOUEUR ET MATERIEL :\nVous jouez contre l'ordinateur.\nLe plateau de jeu se decompose en deux parties de 6 cases chacun.\n\nINITIALISATION:\nAu depart, il y a 4 graines dans chaque case, le but du jeu est de semer puis recolter le maximum de graines.Des que l'un des joueurs en recolte 25 ou plus, il a gagne.\n\nSEMER : \nPour cela, a tour de role, vous choisissez une case de votre plateau et distribuez les graines une par une dans les cases suivantes, dans le sens anti-horaire.\n\nRECOLTER : \nC'est toujours la derniere graine semee qui permet de recolter. Deux conditions doivent etre remplies : \n\t* La derniere graine semee doit etre semee chez l'adversaire.\n\t* Une fois la graine deposee, la case doit contenir exactement 2 ou 3 graines.\nSi la case precedente est toujours chez l'adversaire et contient egalement 2 ou 3 graines, la case est recoltee et ainsi de suite...\nSi un joueur a plus de 12 graines a deposer, il fait le tour du plateau en sautant la case de provenance des graines.\n\nFIN :\nLa partie se termine si : \n\t* L'un des joueurs a recole au moins 25 graines. \n\t* L'un des joueurs n'a plus de graines sur son plateau. \n\t* Il reste moins de 6 graines sur le plateau. \n\t* Le maximum de coups a jouer est atteint. \n\nGAGNANT :\nCelui qui a le grenier le plus rempli ! \n");
 
@@ -793,322 +794,304 @@ int main()
     scanf("%d",&menu);
 
     // DEMONSTRATION
-    if(menu==2){
-      system("clear");
-      printf("\nDEMONSTRATION");
-      printf("\nVoici une petite demonstration qui vous permettra de vous familiariser un peu plus avec le jeu. \n Ceci est le plateau initial : \n");
-      printf("\n\nORDI \n");
-      afficher(ordi,N,&grenier_ordi);
-      printf("\n");
-      printf("JOUEUR \n");
-      afficher(joueur,N,&grenier_joueur);
-      printf("\n\n");
-
-      nb_coups=6;
-
-      while (fj == 1)
+    if(menu==2)
 	{
-	  //Le tour commence
-	  jeu_demo (joueur, ordi, N, &grenier_joueur, &grenier_ordi, compteur, &affichage_nvx_plateau);
-	  compteur++;
-
-	  fj =fin_jeu(joueur,ordi,N,&grenier_joueur, &grenier_ordi, compteur,nb_coups);
-	  if (fj<0)
-	    {
-	      printf ("La partie est finie.\n") ;
-	      if (fj == -1)
+		system("clear");
+	  	printf("\nDEMONSTRATION");
+		printf("\nVoici une petite demonstration qui vous permettra de vous familiariser un peu plus avec le jeu. \n Ceci est le plateau initial : \n");
+	    printf("\n\nORDI \n");
+	    afficher(ordi,N,&grenier_ordi);
+	    printf("\n");
+	    printf("JOUEUR \n");
+	    afficher(joueur,N,&grenier_joueur);
+	    printf("\n\n");
+	    nb_coups=6;
+	    while (fj == 1)
 		{
-		  printf ("Le nombre de coup maximal est atteint.\n");
-		  if(grenier_joueur>grenier_ordi)
-		    {
-		      printf("Vous avez gagne ! Felicitation !\n");
-		    } else
-		    {
-		      if(grenier_joueur<grenier_ordi)
-			{
-			  printf("Vous avez perdu...\n");
-			} else
-			{
-			  printf("Vous etes a egalite ! :s\n");
-			}
-		    }
-		}
-	    }
-	}
-
-      printf("\n| Tapez 3 | Jouer  \n");
-      printf("| Tapez 4 | Quitter  \n");
-
-      printf("\nChoix : ");
-      scanf("%d",&menu);
-
-      if(menu==3){
-	system("clear");
-	printf("La partie commence !\n");
-      }
-      else
-	{
-	  if(menu==4)
-	    {
-	      return 0;
-	    }
-	}
-    }
-    else {
-      if(menu==3)
-	{
-	  system("clear");
-	  printf("La partie commence !\n");
-	}
-      else
-	{
-	  if(menu==4)
-	    {
-	      return 0;
-	    }
-	}
-    }
-  }
-  else
-  {
-    if (menu==2){
-      system("clear");
-      printf("\nDEMONSTRATION\n");
-      printf("\nVoici une petite demonstration qui vous permettra de vous familiariser un peu plus avec le jeu. \nCeci est le plateau initial : \n");
-      printf("\n\nORDI \n");
-      afficher(ordi,N,&grenier_ordi);
-      printf("\n");
-      printf("JOUEUR \n");
-      afficher(joueur,N,&grenier_joueur);
-      printf("\n\n");
-
-      nb_coups=6;
-
-      while (fj == 1)
-	{
-	  //Le tour commence
-
-	  jeu_demo (joueur, ordi, N, &grenier_joueur, &grenier_ordi, compteur, &affichage_nvx_plateau);
+			//Le tour commence
+			jeu_demo (joueur, ordi, N, &grenier_joueur, &grenier_ordi, compteur, &affichage_nvx_plateau);
 	  compteur++;
-
-
-	  fj =fin_jeu(joueur,ordi,N,&grenier_joueur, &grenier_ordi, compteur,nb_coups);
-	  if (fj<0)
-	    {
-	      printf ("\nLa partie est finie.\n") ;
-	      if (fj == -1)
-		{
-		  printf ("\nLe nombre de coup maximal est atteint.\n");
-		  if(grenier_joueur>grenier_ordi)
-		    {
-		      printf("\nVous avez gagne ! Felicitation !\n");
-		    } else
-		    {
-		      if(grenier_joueur<grenier_ordi)
-			{
-			  printf("\nVous avez perdu...\n");
-			} else
-			{
-			  printf("\nVous etes a egalite ! :s\n");
-			}
-		    }
+	  		fj =fin_jeu(joueur,ordi,N,&grenier_joueur, &grenier_ordi, compteur,nb_coups);
+	  		if (fj<0)
+	    	{
+	      		printf ("La partie est finie.\n") ;
+	      		if (fj == -1)
+				{
+		 			printf ("Le nombre de coup maximal est atteint.\n");
+		  			if(grenier_joueur>grenier_ordi)
+		    		{
+		      			printf("Vous avez gagne ! Felicitation !\n");
+		    		} else
+		    			{
+		      				if(grenier_joueur<grenier_ordi)
+							{
+			 					 printf("Vous avez perdu...\n");
+							} else
+								{
+			 						 printf("Vous etes a egalite ! :s\n");
+								}
+		    			}
+				}
+	   	 	}
 		}
-	    }
-	}
-      printf("\n| Tapez 3 | Jouer  \n");
-      printf("| Tapez 4 | Quitter  \n");
+		printf("\n| Tapez 3 | Jouer  \n");
+     	printf("| Tapez 4 | Quitter  \n");
 
-      printf("\nChoix : ");
-      scanf("%d",&menu);
+      	printf("\nChoix : ");
+      	scanf("%d",&menu);
 
-      if(menu==3){
-	system("clear");
-	printf("La partie commence !\n");
-      }
-      else
-	{
-	  if(menu==4)
-	    {
-	      return 0;
-	    }
-    }
-      }
-      else {
-      if (menu==3)
-        {
-            system("clear");
-            printf("La partie commence !\n");
-        }
-        else
-	  {
-	    if(menu==4)
-	      {
-		return 0;
-	      }
-	    else {
-	      printf("Merci de saisir un chiffre entre 1 et 4.");
-	    }
-	  }
-      }
-  }
+      	if(menu==3)
+      	{
+			system("clear");
+			printf("La partie commence !\n");
+      	} else
+			{
+	  			if(menu==4)
+	    		{
+	      			return 0;
+	    		}
+			}
+    } else
+		{
+      		if(menu==3)
+			{
+	 			 system("clear");
+	 			 printf("La partie commence !\n");
+			}else
+				{
+	  				if(menu==4)
+	    			{	
+	      				return 0;
+	    			}
+				}
+    	}
+  } else
+  		{
+    		if (menu==2)
+    		{
+    			system("clear");
+      			printf("\nDEMONSTRATION\n");
+     			printf("\nVoici une petite demonstration qui vous permettra de vous familiariser un peu plus avec le jeu. \nCeci est le plateau initial : \n");
+      			printf("\n\nORDI \n");
+      			afficher(ordi,N,&grenier_ordi);
+      			printf("\n");
+      			printf("JOUEUR \n");
+      			afficher(joueur,N,&grenier_joueur);
+      			printf("\n\n");
 
-    
-	
-  //On reinitialise les variables a leurs valeurs de depart
-    grenier_joueur=0;
-    grenier_ordi=0;
-    fj=1;
-    rejouer=1;
+      			nb_coups=6;
+
+      			while (fj == 1)
+				{
+		  			//Le tour commence
+		  			jeu_demo (joueur, ordi, N, &grenier_joueur, &grenier_ordi, compteur, &affichage_nvx_plateau);
+		  			compteur++;
+		  			fj =fin_jeu(joueur,ordi,N,&grenier_joueur, &grenier_ordi, compteur,nb_coups);
+		  			if (fj<0)
+		   			{
+		     			printf ("\nLa partie est finie.\n") ;
+		      			if (fj == -1)
+						{
+			 				printf ("\nLe nombre de coup maximal est atteint.\n");
+			  				if(grenier_joueur>grenier_ordi)
+			    			{
+			      				printf("\nVous avez gagne ! Felicitation !\n");
+			    			} else
+			    				{
+			      					if(grenier_joueur<grenier_ordi)
+									{
+				  						printf("\nVous avez perdu...\n");
+									} else
+										{
+				  							printf("\nVous etes a egalite ! :s\n");
+										}
+			    				}
+						}
+	    			}
+				}
+      			printf("\n| Tapez 3 | Jouer  \n");
+      			printf("| Tapez 4 | Quitter  \n");
+
+      			printf("\nChoix : ");
+      			scanf("%d",&menu);
+
+      			if(menu==3)
+      			{
+					system("clear");
+					printf("La partie commence !\n");
+      			} else
+					{
+	  					if(menu==4)
+	    				{
+	      					return 0;
+	    				}
+    				}	
+      		} else
+      			{
+      				if (menu==3)
+        			{
+           				system("clear");
+            			printf("La partie commence !\n");
+        			} else
+	  					{
+	    					if(menu==4)
+	      					{
+								return 0;
+	      					} else
+	      						{
+	      							printf("Merci de saisir un chiffre entre 1 et 4.");
+	    						}
+	  					}
+      			}
+  		}
+
+	//On reinitialise les variables a leurs valeurs de depart
+   	grenier_joueur=0;
+   	grenier_ordi=0;
+   	fj=1;
+   	rejouer=1;
 
     
     //Le joueur choisit en combien de coups il souhaite faire une partie
 
-    while(rejouer==1){
+    while(rejouer==1)
+    {
+		printf ("\nEn combien de coups voulez-vous jouer la partie ?\nNombre de coups choisi : ") ;
+		scanf ("%d", &nb_coups); 
 
-	printf ("\nEn combien de coups voulez-vous jouer la partie ?\nNombre de coups choisi : ") ;
-	scanf ("%d", &nb_coups); 
+		printf("\n\nQuel niveau voulez-vous ? Tapez 0,1 ou 2.\nNiveau choisi : ");
+		scanf("%d",&choix_niveau);
 
-	printf("\n\nQuel niveau voulez-vous ? Tapez 0,1 ou 2.\nNiveau choisi : ");
-	scanf("%d",&choix_niveau);
-
-	//Le joueur choisit qui commence 
-	printf ("\n\nVoulez-vous commencer ? Si oui tapez 1, sinon tapez 0.\nChoix : \n");
-	scanf("%d", &compteur);
-	if (compteur==1)
-	{
-        printf ("\nC'est a vous de jouer !\n");
-	}
-	else
-	{
-        printf ("\nC'est a l'ordinateur de jouer !\n");
-	}
-
-
-	//Initialisation et affichage du plateau de jeu
-	remplir(joueur,N);
-	remplir(ordi,N);
-
-	printf("\n");
-	printf("ORDI \n");
-	afficher(ordi,N,&grenier_ordi);
-	printf("\n");
-	printf("JOUEUR \n");
-	afficher(joueur,N,&grenier_joueur);
-	printf("\n\n");
-
-	while (fj == 1)
-	  {
-	    //Le tour commence
-	    jeu(joueur, ordi, N, &grenier_joueur, &grenier_ordi, compteur, &affichage_nvx_plateau, choix_niveau);
-	    compteur++;
+		//Le joueur choisit qui commence 
+		printf ("\n\nVoulez-vous commencer ? Si oui tapez 1, sinon tapez 0.\nChoix : \n");
+		scanf("%d", &compteur);
+		if (compteur==1)
+		{
+			printf ("\nC'est a vous de jouer !\n");
+		} else
+			{
+        		printf ("\nC'est a l'ordinateur de jouer !\n");
+			}
 
 
-	    fj =fin_jeu(joueur,ordi,N,&grenier_joueur, &grenier_ordi, compteur,nb_coups);
-	    if (fj<0)
-	      {
-		printf ("\nLa partie est finie.\n") ;
-		if (fj == -1)
-		  {
-		    printf ("\nLe nombre de coup maximal est atteint.\n");
-		    if(grenier_joueur>grenier_ordi)
-		      {
-			printf("\nVous avez gagne ! Felicitation !\n");
-		      } else
-		      {
-			if(grenier_joueur<grenier_ordi)
-			  {
-			    printf("\nVous avez perdu...\n");
-			  } else
-			  {
-			    printf("\nVous etes a egalite ! :s\n");
-			  }
-		      }
-		  }
-		else
-		  {
-		    if(fj == -2)
-		      {
-			printf ("\nLe grenier de l'ordinateur a atteint 25 ! Vous avez perdu.\n");
-		      }
-		    else
-		      {
-			if (fj == -3)
-			  {
-			    printf ("\nVotre grenier a atteint 25 ! Vous avez gagne ! Voulez-vous rejouer ?\n");
-			  }
-			else
-			  {
-			    if (fj==-4)
-			      {
-				printf ("\nIl y a moins de 6 graines sur le plateau !\n");
-				if(grenier_joueur>grenier_ordi)
-				  {
-				    printf("\nVous avez gagne ! Felicitation !\n");
-				  } else
-				  {
-				    if(grenier_joueur<grenier_ordi)
-				      {
-					printf("\nVous avez perdu...\n");
-				      } else
-				      {
-					printf("\nVous etes a egalite ! :s\n");
-				      }
-				  }
-			      }
-			    else
-			      {
-				if (fj==-5)
-				  {
-				    printf ("\nLe nombre de graines sur le plateau du joueur est nul.\n");
-				    if(grenier_joueur>grenier_ordi)
-				      {
-					printf("\nVous avez gagne ! Felicitation !\n");
-				      }
-				    else
-				      {
-					if(grenier_joueur<grenier_ordi)
-					  {
-					    printf("\nVous avez perdu...\n");
-					  }
-					else
-					  {
-					    printf("\nVous etes a egalite ! :s\n");
-					  }
+		//Initialisation et affichage du plateau de jeu
+		remplir(joueur,N);
+		remplir(ordi,N);
 
-					if (fj==-6)
-					  {
-					    printf ("\nLe nombre de graines sur le plateau de l'ordi est nul.\n");
-					    if(grenier_joueur>grenier_ordi)
-					      {
+		printf("\n");
+		printf("ORDI \n");
+		afficher(ordi,N,&grenier_ordi);
+		printf("\n");
+		printf("JOUEUR \n");
+		afficher(joueur,N,&grenier_joueur);
+		printf("\n\n");
+
+		//Permet de savoir pourquoi la partie se termine
+		while (fj == 1)
+		{
+		    //Le tour commence
+		    jeu(joueur, ordi, N, &grenier_joueur, &grenier_ordi, compteur, &affichage_nvx_plateau, choix_niveau);
+		    compteur++;
+
+
+		    fj =fin_jeu(joueur,ordi,N,&grenier_joueur, &grenier_ordi, compteur,nb_coups);
+		    if (fj<0)
+		    {
+				printf ("\nLa partie est finie.\n") ;
+				if (fj == -1)
+				{
+			    	printf ("\nLe nombre de coup maximal est atteint.\n");
+			    	if(grenier_joueur>grenier_ordi)
+			      	{
 						printf("\nVous avez gagne ! Felicitation !\n");
-					      } else
-					      {
-						if(grenier_joueur<grenier_ordi)
-						  {
-						    printf("\nVous avez perdu...\n");
-						  }
-						else
-						  {
-						    printf("\nVous etes a egalite ! :s\n");
-						  }
-					      }
-					  }
-				      }
-				  }
-			      }
-			  }
-		      }
-		  }
-	      }
-	  }
+			      	} else
+			      		{
+							if(grenier_joueur<grenier_ordi)
+				  			{
+				   				printf("\nVous avez perdu...\n");
+				  			} else
+				  				{
+				    				printf("\nVous etes a egalite ! :s\n");
+				  				}
+			      		}
+			  	} else
+			  		{
+			    		if(fj == -2)
+			      		{
+							printf ("\nLe grenier de l'ordinateur a atteint 25 ! Vous avez perdu.\n");
+			      		} else
+			      			{
+								if (fj == -3)
+				  				{
+				    				printf ("\nVotre grenier a atteint 25 ! Vous avez gagne ! Voulez-vous rejouer ?\n");
+				  				} else
+				  					{
+				   						if (fj==-4)
+				      					{
+											printf ("\nIl y a moins de 6 graines sur le plateau !\n");
+											if(grenier_joueur>grenier_ordi)
+					  						{
+					    						printf("\nVous avez gagne ! Felicitation !\n");
+					  						} else
+					  							{
+					    							if(grenier_joueur<grenier_ordi)
+					      							{
+														printf("\nVous avez perdu...\n");
+					      							} else
+					      								{
+															printf("\nVous etes a egalite ! :s\n");
+					      								}
+					  							}
+				      					} else
+				      						{
+												if (fj==-5)
+					  							{
+					    							printf ("\nLe nombre de graines sur le plateau du joueur est nul.\n");
+					    							if(grenier_joueur>grenier_ordi)
+					      							{
+														printf("\nVous avez gagne ! Felicitation !\n");
+					      							} else
+					   									{
+															if(grenier_joueur<grenier_ordi)
+						  									{
+						    									printf("\nVous avez perdu...\n");
+						  									} else
+						  										{
+						    										printf("\nVous etes a egalite ! :s\n");
+						  										}
+																if (fj==-6)
+						  										{
+						    										printf ("\nLe nombre de graines sur le plateau de l'ordi est nul.\n");
+						    										if(grenier_joueur>grenier_ordi)
+						      										{
+																		printf("\nVous avez gagne ! Felicitation !\n");
+						      										} else
+						      											{
+																			if(grenier_joueur<grenier_ordi)
+							  												{
+							    												printf("\nVous avez perdu...\n");
+							  												} else
+							  													{
+							    													printf("\nVous etes a egalite ! :s\n");
+							  													}
+						      											}
+						  										}
+					    								}
+												}
+				   							}
+				  					}
+			      			}
+					}
+		    }
+		}
 
-	printf("\nVoulez-vous rejouer ? Si oui tapez 1 sinon tapez 0.\n");
-	scanf("%d",&rejouer);
-	fj = 1 ;
-	grenier_joueur=0;
-	grenier_ordi=0;
-	compteur=0;
-      }
+		printf("\nVoulez-vous rejouer ? Si oui tapez 1 sinon tapez 0.\n");
+		scanf("%d",&rejouer);
+		fj = 1 ;
+		grenier_joueur=0;
+		grenier_ordi=0;
+		compteur=0;
+    }
 
       return 0;
-    }
+}
