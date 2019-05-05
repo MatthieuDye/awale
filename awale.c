@@ -3,10 +3,7 @@
 #include <string.h>
 #include <time.h>
 #define N 6
-#define version 0.0.1
 
-/*  #define bleu "\033[1;34m"
-    #define rouge "\033[1;31m"*/
 
 //Bibliothèque des fonctions
 void afficher (int T[], int n, int *g);
@@ -19,63 +16,74 @@ int changement_plateau_ordi (int joueur[], int ordi[], int n, int niveau);
 int recolte_joueur(int joueur[], int ordi[], int n, int *grenier_joueur, int case_finale_joueur, int *affichage_nvx_plateau);
 int recolte_ordi(int joueur[], int ordi[], int n, int *grenier_ordi, int case_finale_ordi, int *affichage_nvx_plateau);
 void jeu(int joueur[], int ordi[], int n, int *grenier_ordi, int *grenier_joueur, int compteur, int *affichage_nvx_plateau,int niveau);
+int recolte_joueur_demo(int joueur[], int ordi[], int n, int *grenier_joueur, int case_finale_joueur, int *affichage_nvx_plateau);
+int recolte_ordi_demo(int joueur[], int ordi[], int n, int *grenier_ordi, int case_finale_ordi, int *affichage_nvx_plateau);
 int graines_joueur(int joueur[], int n);
 int graines_ordi(int joueur[], int n);
 int fin_jeu(int joueur[], int ordi[], int n, int *grenier_joueur, int *grenier_ordi, int compteur,int nb_coups);
 void jeu_demo(int joueur[], int ordi[], int n, int *grenier_joueur, int *grenier_ordi, int compteur, int *affichage_nvx_plateau);
+int max_tab (int tableau[], int taille_tab);
 int niveau1 (int joueur[], int ordi[], int taille_tab);
 void semer_niveau2 (int joueur[], int ordi[], int n,int indice);
 int max_matrice(int matrice[][N], int taille_tab);
 int niveau2(int joueur[], int ordi[], int taille_tab);
 
-//INITIALISATION
+//****************************INITIALISATION :**********************************
+
+//Permet d'afficher le tableau et le grenier
 void afficher (int T[], int n, int *g)
 {
-int i ;
-for (i=0 ; i<n ; i++)
-  {
-printf ("| %d |\t", T[i]);
-}
-printf("\tGrenier : %d",*g);
-}
+	int i ;
+	for (i=0 ; i<n ; i++)
+  	{
+		printf ("| %d |\t", T[i]);
+	}
+	printf("\tGrenier : %d",*g);
+	}
 
+//On initialise le tableau avec 4 graines dans chaque case
 void remplir(int T[], int n)
 {
-for(int i=0 ; i<n ; i++)
-  {
-T[i]=4;
-}
+	for(int i=0 ; i<n ; i++)
+  	{
+		T[i]=4;
+	}
 }
 
-//SEMER
+//************************************SEMER***************************************
 
+//Permet de faire choisir au joueur sa case
 int choix_joueur(int T[], int n)
 {
-int i;
-printf("Choisissez une case (attention ce doit être un chiffre entre 1 et 6) : ");
-scanf("%d",&i);
+	int i;
+	printf("Choisissez une case (attention ce doit être un chiffre entre 1 et 6) : ");
+	scanf("%d",&i);
 
-while((i>6)||(i<1))
-  {
-printf("Veuillez choisir une case entre 1 et 6.\nCase choisie : ");
-scanf("%d",&i);
+	while((i>6)||(i<1))
+  	{	
+		printf("Veuillez choisir une case entre 1 et 6.\nCase choisie : ");
+		scanf("%d",&i);
+	}
+
+	while(T[i-1]==0)
+  	{
+		printf("La case que vous avez choisie est vide. Veuillez choisir une case contenant des graines.\nCase choisie : ");
+		scanf("%d",&i);
+	}
+	system("clear");
+	return i;
+	//Retourne la case choisie par le joueur
 }
 
-while(T[i-1]==0)
-  {
-printf("La case que vous avez choisie est vide. Veuillez choisir une case contenant des graines.\nCase choisie : ");
-scanf("%d",&i);
-}
-system("clear");
-return i;
-}
 
-//Fonction permettant de choisir un nombre aléatoirement compris dans l'intervalle [1;6]
+//Fonction permettant de choisir un nombre aléatoirement compris dans l'intervalle [1;6] (utilisé pour le niveau 0)
 int rand_a_b(int a, int b)
 {
-return rand()%(b-a+1)+a;
+	return rand()%(b-a+1)+a;
 }
 
+
+//Choisi la case de l'ordinateur en fonction du niveau
 int choix_ordi(int joueur[], int ordi[], int n, int niveau)
 {
 	int case_choisie;
@@ -98,346 +106,348 @@ int choix_ordi(int joueur[], int ordi[], int n, int niveau)
 		default:
 		case_choisie=2;
 	}
-
 return case_choisie;
+//Retourne la case de l'ordinateur en fonction du niveau choisi par le joueur
 }
 
+
+//Permet de mettre à jour le plateau après avoir semé quand c'est le tour du joueur
 int changement_plateau_joueur (int joueur[], int ordi[], int n)
 {
-int graines;
-int case_joueur=choix_joueur(joueur,n); // [1,6]
-int case_depart=case_joueur-1; //[0,5]
+	int graines=joueur[case_joueur-1];
+	int case_joueur=choix_joueur(joueur,n); // [1,6]
+	int case_depart=case_joueur-1; //[0,5]
+	joueur[case_joueur-1]=0;
 
-graines=joueur[case_joueur-1];
-joueur[case_joueur-1]=0;
-
-while(graines!=0)
-  {
-//tableau joueur
-while((case_joueur<n)&&(graines!=0))
-  {
-if(case_joueur==case_depart)
-  {
-case_joueur++;
-} else
-  {
-joueur[case_joueur]=joueur[case_joueur]+1;
-graines--;
-case_joueur++;
-}
-}
-if(graines==0)
-  {
-return -1;
-}
- else
-   {
-//tableau ordi
-while((case_joueur>0)&&(graines!=0))
-  {
-ordi[case_joueur-1]=ordi[case_joueur-1]+1;
-graines--;
-case_joueur--;
-}
-if(graines==0)
-  {
-return case_joueur++;
-}
-}
-}
+	while(graines!=0)
+ 	{
+		//Remplissage tableau joueur
+		while((case_joueur<n)&&(graines!=0))
+  		{
+			if(case_joueur==case_depart)
+  			{
+				case_joueur++;
+			} else
+				{
+					joueur[case_joueur]=joueur[case_joueur]+1;
+					graines--;
+					case_joueur++;
+				}
+		}
+		if(graines==0)
+  		{
+			return -1;
+		} else
+ 			{
+				//Remplissage tableau ordi
+				while((case_joueur>0)&&(graines!=0))
+  				{
+					ordi[case_joueur-1]=ordi[case_joueur-1]+1;
+					graines--;
+					case_joueur--;
+				}
+				if(graines==0)
+  				{
+					return case_joueur++;
+					//Retourne la case d'arrivee chez l'ordinateur
+				}
+			}
+	}
 }
 
+
+//Permet de mettre à jour le plateau après avoir semé quand c'est le tour de l'ordinateur
 int changement_plateau_ordi (int joueur[], int ordi[], int n, int niveau)
 {
-int graines;
-int case_ordi=choix_ordi(joueur,ordi,n, niveau); // [1,6]
-int case_depart=case_ordi-1; //[0,5]
+	int graines;
+	int case_ordi=choix_ordi(joueur,ordi,n, niveau); // [1,6]
+	int case_depart=case_ordi-1; //[0,5]
 
 
-printf("Case ordi : %d\n",case_ordi);
-case_ordi=case_ordi-1;
-
-graines=ordi[case_ordi];
-
-ordi[case_ordi]=0;
+	printf("Case ordi : %d\n",case_ordi);
+	case_ordi=case_ordi-1;
+	graines=ordi[case_ordi];
+	ordi[case_ordi]=0;
 
 
-while(graines!=0) // ~
-  {
-//tableau ordi
-// case_ordi [0,5]
-while((case_ordi>=0)&&(graines!=0)) // ~
-  {
-if(case_ordi==case_depart) // besoin du cpt ?
-
-  {
-case_ordi--;
-} else
-  {
-ordi[case_ordi]=ordi[case_ordi]+1;
-graines--;
-case_ordi--;
+	while(graines!=0)
+  	{
+		//Remplissage tableau ordi
+		// case_ordi [0,5]
+		while((case_ordi>=0)&&(graines!=0))
+  		{
+			if(case_ordi==case_depart)
+			{
+				case_ordi--;
+			} else
+  				{
+					ordi[case_ordi]=ordi[case_ordi]+1;
+					graines--;
+					case_ordi--;
+				}
+		}
+		if(graines==0)
+	  	{
+			return -1;
+		} else // graines != 0 && case_ordi = -1
+	   		{
+	   			case_ordi++; // case_ordi = 0
+	   			//Remplissage tableau joueur
+				while((case_ordi<n)&&(graines!=0)) // n = 6 case_ordi [0,5]
+	  			{
+					joueur[case_ordi]=joueur[case_ordi]+1;
+					graines--;
+					case_ordi++;
+				}
+			// case_ordi = 6 OU graines = 0
+				if(graines==0)
+	  			{
+					return case_ordi;
+					//Retourne la case d'arrivee chez le joueur
+				} else
+					{
+						case_ordi--;
+					}
+			}
+	}
 }
 
 
+//***********************************RECOLTE*************************************
 
-}
-
-// sort si case_ordi < 0 (-1) OU graines = 0
-
-if(graines==0)
-  {
-return -1;
-}
- else // graines != 0 && case_ordi = -1
-   {
-
-case_ordi++; // case_ordi = 0
-
-//tableau joueur
-
-while((case_ordi<n)&&(graines!=0)) // n = 6 case_ordi [0,5]
-  {
-joueur[case_ordi]=joueur[case_ordi]+1; // ?
-graines--;
-case_ordi++;
-}
-
-// case_ordi = 6 OU graines = 0
-
-if(graines==0)
-  {
-return case_ordi;
-}
- else
-   {
-case_ordi--;
-}
-}
-}
-}
-
-
-
+//Permet de recolter les graines chez l'adversaire
 int recolte_joueur(int joueur[], int ordi[], int n, int *grenier_joueur, int case_finale_joueur, int *affichage_nvx_plateau)
 {
-int recolte = *grenier_joueur ;
-*affichage_nvx_plateau=0;
-if (case_finale_joueur== -1)
-  {
-printf("\nC'est a l'ordinateur de jouer !\n\n");
-} else
-  {
-if( (ordi[case_finale_joueur]==2) || (ordi[case_finale_joueur]==3) )
-  {
-*affichage_nvx_plateau=1;
-printf("\nVous pouvez recolter.\n");
-while( ( case_finale_joueur <= n ) && ( (ordi[case_finale_joueur]==2) || (ordi[case_finale_joueur]==3) ) )
-  {
-*grenier_joueur = *grenier_joueur + ordi[case_finale_joueur];
-ordi[case_finale_joueur]=0;
-case_finale_joueur++;
-}
-recolte = *grenier_joueur - recolte ;
-printf(" \nVous avez fini de recolter. \n Vous avez recolte %d graines, voici le nouveau plateau.\n", recolte);
-}
- else
-   {
-printf("\nVous ne pouvez pas recolter car il n'y a pas 2 ou 3 graines. \n\n");
-}
+	int recolte = *grenier_joueur ;
+	*affichage_nvx_plateau=0; //Permet d'afficher le nouveau plateau s'il y a recolte
+
+	if (case_finale_joueur== -1) //Le joueur ne peut pas recolter car son nombre de graines ne lui permet pas de finir chez l'adversaire
+  	{
+		printf("\nC'est a l'ordinateur de jouer !\n\n");
+	} else
+  		{
+			if( (ordi[case_finale_joueur]==2) || (ordi[case_finale_joueur]==3) )
+  			{
+  				*affichage_nvx_plateau=1;
+				printf("\nVous pouvez recolter.\n");
+				while( ( case_finale_joueur <= n ) && ( (ordi[case_finale_joueur]==2) || (ordi[case_finale_joueur]==3) ) )//Recolte tant que la case precedente contient 2 ou 3 graines
+				{
+					*grenier_joueur = *grenier_joueur + ordi[case_finale_joueur];
+					ordi[case_finale_joueur]=0; //Apres recolte, on met la case a 0
+					case_finale_joueur++;
+				}
+				recolte = *grenier_joueur - recolte ;
+				printf(" \nVous avez fini de recolter. \n Vous avez recolte %d graines, voici le nouveau plateau.\n", recolte);
+			} else
+   				{
+					printf("\nVous ne pouvez pas recolter car il n'y a pas 2 ou 3 graines. \n\n");
+				}
+		}
+	return *grenier_joueur;
+	//Retourne le grenier mis a jour
 }
 
-return *grenier_joueur;
-}
 
+//Permet de recolter les graines chez l'adversaire
 int recolte_ordi(int joueur[], int ordi[], int n, int *grenier_ordi, int case_finale_ordi, int *affichage_nvx_plateau)
 {
-*affichage_nvx_plateau=0 ;
-int recolte = *grenier_ordi ;
-if (case_finale_ordi==-1)
-  {
-printf("C'est a vous de jouer! \n");
-} else
-  {
-if(joueur[case_finale_ordi-1]==2||joueur[case_finale_ordi-1]==3)
-  {
-*affichage_nvx_plateau=1;
-printf("L'ordinateur peut recolter.\n");
-while( ( case_finale_ordi > 0 ) && ( (joueur[case_finale_ordi-1]==2) || (joueur[case_finale_ordi-1]==3) ) )
-  {
-*grenier_ordi = *grenier_ordi + joueur[case_finale_ordi-1];
- joueur[case_finale_ordi-1]=0;
- case_finale_ordi--;
-  }
- recolte = *grenier_ordi - recolte ;
- printf("Voici le nouveau plateau.\n");
-  }
- else
-   {
-     printf("\nIl ne peut pas recolter car il n'y a pas 2 ou 3 graines.\n\n");
-   }
-  }
- return *grenier_ordi;
+	int recolte = *grenier_ordi ;
+	*affichage_nvx_plateau=0 ; //Permet d'afficher le nouveau plateau s'il y a recolte
+	
+	if (case_finale_ordi==-1) //L'ordinateur ne peut pas recolter car son nombre de graines ne lui permet pas de finir chez l'adversaire
+  	{
+		printf("C'est a vous de jouer! \n");
+	} else
+  		{
+			if(joueur[case_finale_ordi-1]==2||joueur[case_finale_ordi-1]==3)
+  			{
+				*affichage_nvx_plateau=1;
+				printf("L'ordinateur peut recolter.\n");
+				while( ( case_finale_ordi > 0 ) && ( (joueur[case_finale_ordi-1]==2) || (joueur[case_finale_ordi-1]==3) ) ) //Recolte tant que la case precedente contient 2 ou 3 graines
+  				{
+					*grenier_ordi = *grenier_ordi + joueur[case_finale_ordi-1];
+ 					joueur[case_finale_ordi-1]=0; //Apres recolte, on met la case a 0
+ 					case_finale_ordi--;
+  				}
+ 				recolte = *grenier_ordi - recolte ;
+ 				printf("Voici le nouveau plateau.\n");
+  			} else 
+  				{
+     				printf("\nIl ne peut pas recolter car il n'y a pas 2 ou 3 graines.\n\n");
+  				}
+  		}
+ 	return *grenier_ordi;
+ 	//Retourne le grenier mis a jour
 }
 
+
+//Lance le jeu : permet de faire jouer l'ordinateur ou l'utilisateur et qui correspond à un coup de la partie (choisir une case, semer - modifier plateau, recolte si possible-modifier plateau)
 void jeu(int joueur[], int ordi[], int n, int *grenier_joueur, int *grenier_ordi, int compteur, int *affichage_nvx_plateau, int niveau)
 {
-  int case_finale_joueur;
-  int case_finale_ordi ;
+	int case_finale_joueur;
+	int case_finale_ordi ;
 
-  if (compteur%2!=0)
+	if (compteur%2!=0) //Permet de savoir si c'est le tour du joueur : si c'est impair c'est au tour du joueur, si c'est pair c'est à l'ordinateur
     {
-      printf("\n\n\t\t|        JOUEUR        |\n\n");
-      case_finale_joueur=changement_plateau_joueur(joueur, ordi,n);
-      printf("\n\nORDI \n");
-      afficher(ordi,N,grenier_ordi);
-      printf("\n");
-      printf("JOUEUR \n");
-      afficher(joueur,N,grenier_joueur);
-      printf("\n");
-      *grenier_joueur=recolte_joueur(joueur,ordi,n,grenier_joueur,case_finale_joueur,affichage_nvx_plateau);
-      if ( *affichage_nvx_plateau==1)
-	{
-	  printf("\n\nORDI \n");
-	  afficher(ordi,N,grenier_ordi);
-	  printf("\n");
-	  printf("JOUEUR \n");
-	  afficher(joueur,N,grenier_joueur);
-	  printf("\n");
-	}
-    } else
-    {
-      printf("\n\n\t\t|      ORDINATEUR      |\n\n");
-      case_finale_ordi=changement_plateau_ordi(joueur, ordi,n,niveau);
-      printf("\nORDI \n");
-      afficher(ordi,N,grenier_ordi);
-      printf("\n");
-      printf("JOUEUR \n");
-      afficher(joueur,N,grenier_joueur);
-      printf("\n");
-      *grenier_ordi=recolte_ordi(joueur,ordi,n,grenier_ordi,case_finale_ordi,affichage_nvx_plateau);
-      if ( *affichage_nvx_plateau==1)
-	{
-	  printf("\n\nORDI \n");
-	  afficher(ordi,N,grenier_ordi);
-	  printf("\n");
-	  printf("JOUEUR \n");
-	  afficher(joueur,N,grenier_joueur);
-	  printf("\n");
-	}
-
-    }
+    	printf("\n\n\t\t|        JOUEUR        |\n\n");
+    	case_finale_joueur=changement_plateau_joueur(joueur, ordi,n);
+    	printf("\n\nORDI \n");
+    	afficher(ordi,N,grenier_ordi);
+    	printf("\n");
+    	printf("JOUEUR \n");
+    	afficher(joueur,N,grenier_joueur);
+    	printf("\n");
+    	*grenier_joueur=recolte_joueur(joueur,ordi,n,grenier_joueur,case_finale_joueur,affichage_nvx_plateau);
+    	if ( *affichage_nvx_plateau==1)
+    	{
+	 		printf("\n\nORDI \n");
+	 		afficher(ordi,N,grenier_ordi);
+	 	 	printf("\n");
+	 	 	printf("JOUEUR \n");
+	 	 	afficher(joueur,N,grenier_joueur);
+	 	 	printf("\n");
+	 	}
+    } else 
+   		{
+      		printf("\n\n\t\t|      ORDINATEUR      |\n\n");
+      		case_finale_ordi=changement_plateau_ordi(joueur, ordi,n,niveau);
+      		printf("\nORDI \n");
+      		afficher(ordi,N,grenier_ordi);
+      		printf("\n");
+      		printf("JOUEUR \n");
+      		afficher(joueur,N,grenier_joueur);
+      		printf("\n");
+      		*grenier_ordi=recolte_ordi(joueur,ordi,n,grenier_ordi,case_finale_ordi,affichage_nvx_plateau);
+      		if ( *affichage_nvx_plateau==1)
+			{
+	  			printf("\n\nORDI \n");
+	  			afficher(ordi,N,grenier_ordi);
+	  			printf("\n");
+	  			printf("JOUEUR \n");
+	  			afficher(joueur,N,grenier_joueur);
+	  			printf("\n");
+			}
+		}
 }
+
+
+//************************************DEMONSTRATION***************************************
+
+//Permet de recolter les graines chez l'adversaire et d'expliquer comment se deroule la recolte au joueur
 int recolte_joueur_demo(int joueur[], int ordi[], int n, int *grenier_joueur, int case_finale_joueur, int *affichage_nvx_plateau)
 {
-int recolte = *grenier_joueur ;
-*affichage_nvx_plateau=0;
-if (case_finale_joueur== -1)
-  {
-printf("\nVous ne pouvez pas recolter car vous etes arrivée sur le plateau de l'ordinateur. C'est a l'ordinateur de jouer !\n");
-} else
-  {
-if( (ordi[case_finale_joueur]==2) || (ordi[case_finale_joueur]==3) )
-  {
-*affichage_nvx_plateau=1;
-printf("\nVous pouvez recolter car la case sur laquelle vous etes arrivée contient 2 ou 3 graines.\n");
-while( ( case_finale_joueur <= n ) && ( (ordi[case_finale_joueur]==2) || (ordi[case_finale_joueur]==3) ) )
-  {
-*grenier_joueur = *grenier_joueur + ordi[case_finale_joueur];
-ordi[case_finale_joueur]=0;
-case_finale_joueur++;
-}
-recolte = *grenier_joueur - recolte ;
-printf("\nVous avez fini de recolter \n Vous avez recolte %d graines. Voici le nouveau plateau.\n", recolte);
-}
- else
-   {
-printf("\nVous ne pouvez pas recolter car il n'y a pas 2 ou 3 graines dans la case sur laquelle vous êtes arrivée.\n\n");
-}
+	int recolte = *grenier_joueur ;
+	*affichage_nvx_plateau=0;
+
+	if (case_finale_joueur== -1)
+	{
+		printf("\nVous ne pouvez pas recolter car vous etes arrive sur le plateau de l'ordinateur. C'est a l'ordinateur de jouer !\n");
+	} else
+  		{
+			if( (ordi[case_finale_joueur]==2) || (ordi[case_finale_joueur]==3) )
+  			{
+				*affichage_nvx_plateau=1;
+				printf("\nVous pouvez recolter car la case sur laquelle vous etes arrive contient 2 ou 3 graines.\n");
+				while( ( case_finale_joueur <= n ) && ( (ordi[case_finale_joueur]==2) || (ordi[case_finale_joueur]==3) ) )
+  				{
+					*grenier_joueur = *grenier_joueur + ordi[case_finale_joueur];
+					ordi[case_finale_joueur]=0;
+					case_finale_joueur++;
+				}
+				recolte = *grenier_joueur - recolte ;
+				printf("\nVous avez fini de recolter \n Vous avez recolte %d graines. Voici le nouveau plateau.\n", recolte);
+			} else
+   				{
+					printf("\nVous ne pouvez pas recolter car il n'y a pas 2 ou 3 graines dans la case sur laquelle vous êtes arrivée.\n\n");
+				}
+		}
+	return *grenier_joueur;
 }
 
-return *grenier_joueur;
-}
 
+//Permet de recolter les graines chez l'adversaire et d'expliquer comment se deroule la recolte au joueur
 int recolte_ordi_demo(int joueur[], int ordi[], int n, int *grenier_ordi, int case_finale_ordi, int *affichage_nvx_plateau)
 {
-*affichage_nvx_plateau=0 ;
-int recolte = *grenier_ordi ;
-if (case_finale_ordi==-1)
-  {
-printf("\nL'ordinateur ne peut pas recolter car la case sur laquelle il est arrivé ne contient pas 2 ou 3 graines. C'est a vous de jouer !\n\n");
-} else
-  {
-if(joueur[case_finale_ordi-1]==2||joueur[case_finale_ordi-1]==3)
-  {
-*affichage_nvx_plateau=1;
-printf("\nL'ordinateur peut recolter car il y a 2 ou 3 graines sur la case sur laquelle il est arrvé.\n");
-while( ( case_finale_ordi > 0 ) && ( (joueur[case_finale_ordi-1]==2) || (joueur[case_finale_ordi-1]==3) ) )
-  {
-*grenier_ordi = *grenier_ordi + joueur[case_finale_ordi-1];
- joueur[case_finale_ordi-1]=0;
- case_finale_ordi--;
-  }
- recolte = *grenier_ordi - recolte ;
- printf("\nL'ordinateur a fini de recolter. \nIl a recolte %d graines. Voici le nouveau plateau\n.", recolte);
-  }
- else
-   {
-     printf("\nIl ne peut pas recolter car il n'y a pas 2 ou 3 graines sur sa case d'arrivee.\n");
-   }
-  }
- return *grenier_ordi;
+	*affichage_nvx_plateau=0 ;
+	int recolte = *grenier_ordi ;
+
+	if (case_finale_ordi==-1)
+  	{
+		printf("\nL'ordinateur ne peut pas recolter car la case sur laquelle il est arrivé ne contient pas 2 ou 3 graines. C'est a vous de jouer !\n\n");
+	} else
+  		{
+			if(joueur[case_finale_ordi-1]==2||joueur[case_finale_ordi-1]==3)
+  			{
+				*affichage_nvx_plateau=1;
+				printf("\nL'ordinateur peut recolter car il y a 2 ou 3 graines sur la case sur laquelle il est arrvé.\n");
+				while( ( case_finale_ordi > 0 ) && ( (joueur[case_finale_ordi-1]==2) || (joueur[case_finale_ordi-1]==3) ) )
+  				{
+					*grenier_ordi = *grenier_ordi + joueur[case_finale_ordi-1];
+ 					joueur[case_finale_ordi-1]=0;
+ 					case_finale_ordi--;
+  				}
+ 				recolte = *grenier_ordi - recolte ;
+ 				printf("\nL'ordinateur a fini de recolter. \nIl a recolte %d graines. Voici le nouveau plateau\n.", recolte);
+  			} else
+   				{
+     				printf("\nIl ne peut pas recolter car il n'y a pas 2 ou 3 graines sur sa case d'arrivee.\n");
+   				}
+  		}
+ 	return *grenier_ordi;
 }
 
+
+//Permet d'expliquer au joueur le deroulement du jeu : permet de faire jouer l'ordinateur ou l'utilisateur et qui correspond à un coup de la partie (choisir une case, semer - modifier plateau, recolte si possible-modifier plateau)
 void jeu_demo(int joueur[], int ordi[], int n, int *grenier_joueur, int *grenier_ordi, int compteur, int *affichage_nvx_plateau)
 {
-  int case_finale_joueur;
-  int case_finale_ordi ;
+	int case_finale_joueur;
+	int case_finale_ordi ;
 
-  if (compteur%2!=0)
+	if (compteur%2!=0)
     {
-      printf("\n\n\t\t|        JOUEUR        |\n\n");
-      case_finale_joueur=changement_plateau_joueur(joueur, ordi,n);
-      printf("\n\nORDI \n");
-      afficher(ordi,N,grenier_ordi);
-      printf("\n");
-      printf("JOUEUR \n");
-      afficher(joueur,N,grenier_joueur);
-      printf("\n");
-      *grenier_joueur=recolte_joueur_demo(joueur,ordi,n,grenier_joueur,case_finale_joueur,affichage_nvx_plateau);
-      if ( *affichage_nvx_plateau==1)
-	{
-	  printf("\n\nORDI \n");
-	  afficher(ordi,N,grenier_ordi);
-	  printf("\n");
-	  printf("JOUEUR \n");
-	  afficher(joueur,N,grenier_joueur);
-	  printf("\n");
-	}
+    	printf("\n\n\t\t|        JOUEUR        |\n\n");
+    	case_finale_joueur=changement_plateau_joueur(joueur, ordi,n);
+    	printf("\n\nORDI \n");
+    	afficher(ordi,N,grenier_ordi);
+    	printf("\n");
+    	printf("JOUEUR \n");
+    	afficher(joueur,N,grenier_joueur);
+    	printf("\n");
+    	*grenier_joueur=recolte_joueur_demo(joueur,ordi,n,grenier_joueur,case_finale_joueur,affichage_nvx_plateau);
+    	if ( *affichage_nvx_plateau==1)
+		{
+			printf("\n\nORDI \n");
+			afficher(ordi,N,grenier_ordi);
+	 		printf("\n");
+	  		printf("JOUEUR \n");
+	  		afficher(joueur,N,grenier_joueur);
+	  		printf("\n");
+		}
     } else
-    {
-      printf("\n\n\t\t|      ORDINATEUR      |\n\n");
-      case_finale_ordi=changement_plateau_ordi(joueur, ordi,n,0); //on met le niveau de la demo à 0 par defaut
-      printf("\nORDI \n");
-      afficher(ordi,N,grenier_ordi);
-      printf("\n");
-      printf("JOUEUR \n");
-      afficher(joueur,N,grenier_joueur);
-      printf("\n");
-      *grenier_ordi=recolte_ordi_demo(joueur,ordi,n,grenier_ordi,case_finale_ordi,affichage_nvx_plateau);
-      if ( *affichage_nvx_plateau==1)
-	{
-	  printf("\n\nORDI \n");
-	  afficher(ordi,N,grenier_ordi);
-	  printf("\n");
-	  printf("JOUEUR \n");
-	  afficher(joueur,N,grenier_joueur);
-	  printf("\n");
-	}
-
-    }
+    	{
+      		printf("\n\n\t\t|      ORDINATEUR      |\n\n");
+      		case_finale_ordi=changement_plateau_ordi(joueur, ordi,n,0); //on met le niveau de la demo à 0 par defaut
+      		printf("\nORDI \n");
+      		afficher(ordi,N,grenier_ordi);
+      		printf("\n");
+      		printf("JOUEUR \n");
+      		afficher(joueur,N,grenier_joueur);
+      		printf("\n");
+     		*grenier_ordi=recolte_ordi_demo(joueur,ordi,n,grenier_ordi,case_finale_ordi,affichage_nvx_plateau);
+      		if ( *affichage_nvx_plateau==1)
+			{
+	  			printf("\n\nORDI \n");
+	  			afficher(ordi,N,grenier_ordi);
+	  			printf("\n");
+	  			printf("JOUEUR \n");
+	  			afficher(joueur,N,grenier_joueur);
+	  			printf("\n");
+			}
+		}
 }
 
+
+//Mets a jour le grenier du joueur
 int graines_joueur(int joueur[], int n)
 {
   int i;
@@ -448,8 +458,11 @@ int graines_joueur(int joueur[], int n)
       graines_j=graines_j+joueur[i];
     }
   return graines_j;
+  //Retourne le grenier mis a jour
 }
 
+
+//Mets a jour le grenier de l'ordinateur
 int graines_ordi(int ordi[], int n)
 {
   int i;
@@ -460,55 +473,62 @@ int graines_ordi(int ordi[], int n)
       graines_o=graines_o+ordi[i];
     }
   return graines_o;
+  //Retourne le grenier mis a jour
 }
 
+
+//*******************************FIN DU JEU*********************************
+
+//Permet de savoir pourquoi la partie se termine
 int fin_jeu(int joueur[], int ordi[], int n, int *grenier_joueur, int *grenier_ordi, int compteur,int nb_coups)
 {
-  int graines_j=graines_joueur(joueur,n);
-  int graines_o=graines_ordi(ordi,n);
-  int graines_plateau=graines_j+graines_o;
+	int graines_j=graines_joueur(joueur,n);
+	int graines_o=graines_ordi(ordi,n);
+	int graines_plateau=graines_j+graines_o;
 
-  if(compteur>nb_coups)
+	if(compteur>nb_coups)
     {
-      return -1;
+    	return -1;
     } else
-    {
-      if (*grenier_ordi>25)
-	{
-	  return -2;
-	} else
-	{
-	  if (*grenier_joueur>25)
-	    {
-	      return -3;
-	    } else
-	    {
-	      if (graines_plateau<6)
+    	{
+      	if (*grenier_ordi>25)
 		{
-		  return -4;
-		}
-	      else
-		{
-		  if(graines_j==0)
-		    {
-		      return -5;
-		    } else
-		    {
-		      if(graines_o==0)
+	  		return -2;
+		} else
 			{
-			  return -6;
-			} else
-			{
-			  return 1;
+	  			if (*grenier_joueur>25)
+	    		{
+	      			return -3;
+	    		} else
+	    			{
+	      				if (graines_plateau<6)
+						{
+		  					return -4;
+						} else
+							{
+		  						if(graines_j==0)
+		    					{
+		      						return -5;
+		    					} else
+		    						{
+		      							if(graines_o==0)
+										{
+			  								return -6;
+										} else
+											{
+			  									return 1;
+											}
+		    						}
+							}
+	    			}
 			}
-		    }
-		}
-	    }
-	}
-    }
+    	}
 }
 
-int max_tab (int tableau[], int taille_tab) { // renvoie pour le tableau donné l'indice de la plus grande valeur qu'il contient
+
+//Renvoie pour le tableau donné l'indice de la plus grande valeur qu'il contient
+int max_tab (int tableau[], int taille_tab)
+{
 	int reference = tableau[0]; //-1
 	int indice_ref = 0;
 	int i;
@@ -521,10 +541,10 @@ int max_tab (int tableau[], int taille_tab) { // renvoie pour le tableau donné 
 			indice_ref = i;
 		}
 	}
-
 	return indice_ref; 
 }
 
+//
 int niveau1 (int joueur[], int ordi[], int taille_tab)
 {
 	int tableau_gains[] = {-1,-1,-1,-1,-1,-1};
@@ -595,6 +615,8 @@ void semer_niveau2 (int joueur[], int ordi[], int n,int indice)
 	}
 }
 
+
+//Renvoie l'indice de la case que devrait jouer l'ordinateur pour avoir le maximum de gain possible
 int max_matrice(int matrice[][N], int taille_tab)
 {
 	int j,o,indice=0;
@@ -614,13 +636,16 @@ int max_matrice(int matrice[][N], int taille_tab)
 return indice;
 }
 
-int niveau2(int joueur[], int ordi[], int taille_tab) // renvoie l'indice de la case la plus rentable
+
+//Renvoie l'indice de la case la plus rentable
+int niveau2(int joueur[], int ordi[], int taille_tab)
 {
 	// o correspond a la case choisie par l'ordinateur
 	// j correspond a la case choisie par le joueur
 	int difference_gains[taille_tab][taille_tab];
 	int o,j;
-	int indice_j, indice_o ;
+	int indice_j ; //Case d'arrivée sur le plateau de l'ordinateur après le coup du joueur
+	int indice_o ; //Case d'arrivée sur le plateau du joueur après le coup de l'ordinateur
 	int gain_ordi;
 	int gain_joueur ;
 	int ordi_bis[N],joueur_bis[N]; //copie les valeurs de nos tableaux car dans cette fonction on va les modifier et donc les perdre
@@ -640,13 +665,10 @@ int niveau2(int joueur[], int ordi[], int taille_tab) // renvoie l'indice de la 
 		}
 	 }
 
-
     for(j=0; j<taille_tab ; j++)
     {
-    	printf("Case %d\n", j);
     	for (o=0; o<taille_tab;o++)
     	{
-    		printf("Case %d\n", o);
 
 		for (k=0; k<N ; k++)
 		{
@@ -657,7 +679,7 @@ int niveau2(int joueur[], int ordi[], int taille_tab) // renvoie l'indice de la 
     		//Calcul du gain maximal de l'ordinateur 
     		//Indice d'arrivée dans le tableau joueur
 		   indice_o = ordi[o]-(o+1);
-		   //Si le  nombre de graines me permet de passer dans le tableau joueur et qu'il y a 1 ou 2 graines (car le tableau n'est pas encore rempli)
+		   //Si le nombre de graines me permet de passer dans le tableau joueur et qu'il y a 1 ou 2 graines (car le tableau n'est pas encore rempli)
 		   if(ordi[o]>o && ordi[o]!=0)
 		   //Vaut 0 si il peut pas, 1 si il peut
 			{
@@ -708,16 +730,15 @@ int niveau2(int joueur[], int ordi[], int taille_tab) // renvoie l'indice de la 
 	}
 
 	return max_matrice(difference_gains,taille_tab);
-	
 }
 
 
 int main()
 {
-  int joueur[N];
-  int ordi[N];
-  int case_joueur;
-  int a;
+	int joueur[N];
+	int ordi[N];
+	int case_joueur;
+	int a;
   int case_ordi;
   int grenier_joueur=0;
   int grenier_ordi=0;
