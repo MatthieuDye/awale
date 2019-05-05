@@ -835,7 +835,7 @@ int menu_jeu(int joueur[], int ordi[], int n, int *grenier_ordi, int *grenier_jo
   	printf("\033[1;34m| Tapez 3 |\033[00m Jouer  \n");
   	printf("\033[1;34m| Tapez 4 |\033[00m Quitter  \n");
 
-  	printf("\n\033[1;34mChoix : ");
+  	printf("\n\033[1;34mChoix : \033[00m");
   	scanf("%d",&menu); 
   	while (menu<1 || menu>4)
     	{
