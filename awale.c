@@ -61,7 +61,7 @@ int choix_joueur(int T[], int n)
 
 	while((i>6)||(i<1))
   	{	
-		printf("Veuillez choisir une case entre 1 et 6.\nCase choisie : ");
+		printf("\033[1;31mVeuillez choisir une case entre 1 et 6.\033[00m\nCase choisie : ");
 		scanf("%d",&i);
 	}
 
@@ -291,7 +291,7 @@ void jeu(int joueur[], int ordi[], int n, int *grenier_joueur, int *grenier_ordi
 
 	if (compteur%2!=0) //Permet de savoir si c'est le tour du joueur : si c'est impair c'est au tour du joueur, si c'est pair c'est à l'ordinateur
     {
-    	printf("\n\n\t\t\t|        JOUEUR        |\n\n");
+    	printf("\n\n\t\t\t|        \033[1;30mJOUEUR\033[00m        |\n\n");
     	case_finale_joueur=changement_plateau_joueur(joueur, ordi,n);
     	printf("\n\nORDI \n");
     	afficher(ordi,N,grenier_ordi);
@@ -310,7 +310,7 @@ void jeu(int joueur[], int ordi[], int n, int *grenier_joueur, int *grenier_ordi
 	 	}
     } else 
    		{
-      		printf("\n\n\t\t\t|      ORDINATEUR      |\n\n");
+      		printf("\n\n\t\t\t|      \033[1;30mORDINATEUR\033[00m      |\n\n");
       		case_finale_ordi=changement_plateau_ordi(joueur, ordi,n,niveau);
       		printf("\nORDI \n");
       		afficher(ordi,N,grenier_ordi);
@@ -405,7 +405,7 @@ void jeu_demo(int joueur[], int ordi[], int n, int *grenier_joueur, int *grenier
 
 	if (compteur%2!=0)
     {
-    	printf("\n\n\t\t\t|        JOUEUR        |\n\n");
+    	printf("\n\n\t\t\t|        \033[1;30mJOUEUR\033[00m        |\n\n");
     	case_finale_joueur=changement_plateau_joueur(joueur, ordi,n);
     	printf("\n\nORDI \n");
     	afficher(ordi,N,grenier_ordi);
@@ -425,7 +425,7 @@ void jeu_demo(int joueur[], int ordi[], int n, int *grenier_joueur, int *grenier
 		}
     } else
     	{
-      		printf("\n\n\t\t\t|      ORDINATEUR      |\n\n");
+      		printf("\n\n\t\t\t|      \033[1;30mORDINATEUR\033[00m      |\n\n");
       		case_finale_ordi=changement_plateau_ordi(joueur, ordi,n,0); //on met le niveau de la demo à 0 par defaut
       		printf("\nORDI \n");
       		afficher(ordi,N,grenier_ordi);
@@ -615,6 +615,8 @@ void raison_fin_jeu(int fj,int joueur[], int ordi[], int n, int *grenier_joueur,
 		}
 
 
+//************************************NIVEAU 1***************************************
+
 //Renvoie pour le tableau donné l'indice de la plus grande valeur qu'il contient
 int max_tab (int tableau[], int taille_tab)
 {
@@ -658,6 +660,9 @@ int niveau1 (int joueur[], int ordi[], int taille_tab)
 	}
 	return max_tab(tableau_gains,taille_tab);
 }
+
+
+//************************************NIVEAU 2***************************************
 
 void semer_niveau2 (int joueur[], int ordi[], int n,int indice)
 {
@@ -822,58 +827,33 @@ int niveau2(int joueur[], int ordi[], int taille_tab)
 }
 
 
+//************************************MENU***************************************
 
-
-int main()
+int menu_jeu(int joueur[], int ordi[], int n, int *grenier_ordi, int *grenier_joueur,int nb_coups, int fj, int compteur, int *affichage_nvx_plateau)
 {
-	int joueur[N];
-	int ordi[N];
-	int case_joueur;
-	int a;
-	int case_ordi;
-	int grenier_joueur=0;
-	int grenier_ordi=0;
-	int compteur =0 ;
-	int fj=1;
-	int nb_coups ;
-	int rejouer=1;
-	int affichage_nvx_plateau;
-	int menu;
-	char pause;
-	int choix_niveau;
+	int menu ; 
+
+	//REMPLISSAGE TABLEAUX
+	remplir(joueur,n);
+  	remplir(ordi,n);
 
 	system("clear");
-  	printf ("\n\t\t\tBienvenue dans le jeu Awale !\n") ;
+	printf ("\n\t\t\tBienvenue dans le jeu Awale !\n") ;
   	printf("\nMENU\n");
-  	printf("\n033[1;34m| Tapez 1 |033[00m Lire les règles  \n");
-  	printf("033[1;34m| Tapez 2 |033[00m Voir une demonsration  \n");
-  	printf("033[1;34m| Tapez 3 |033[00m Jouer  \n");
-  	printf("033[1;34m| Tapez 4 |033[00m Quitter  \n");
+  	printf("\n\033[1;34m| Tapez 1 |\033[00m Lire les règles  \n");
+  	printf("\033[1;34m| Tapez 2 |\033[00m Voir une demonsration  \n");
+  	printf("\033[1;34m| Tapez 3 |\033[00m Jouer  \n");
+  	printf("\033[1;34m| Tapez 4 |\033[00m Quitter  \n");
 
-  	printf("\nChoix : ");
-  	scanf("%d",&menu);
-
-  //REMPLISSAGE TABLEAUX
-  	remplir(joueur,N);
-  	remplir(ordi,N);
-
-  /*switch (menu) {
-  	case 1:
-  		reading_rules()
-  	break;
-  	case 2:
-  		demo();
-  	break;
-  	case 3:
-  	break
-  	case 4:
-  	break;
-  	default:
-  	//
-  }*/
-
-  if(menu==1)
-  {
+  	printf("\n\033[1;34mChoix : ");
+  	scanf("%d",&menu); 
+  	while (menu<1 || menu>4)
+    	{
+    		printf(" \n\033[1;31mVeuillez saisir un chiffre entre 1 et 4 s'il vous plait :\033[00m ") ;
+    		scanf("%d",&menu); 
+    	}
+	if(menu==1)
+  	{
   	//AFFICHAGE REGLE DU JEU
     printf("\nVoici les regles du jeu :\n\n\033[1;34mJOUEUR ET MATERIEL :\033[00m\nVous jouez contre l'ordinateur.\nLe plateau de jeu se decompose en deux parties de 6 cases chacun.\n\n\033[1;34mINITIALISATION:\033[00m\nAu depart, il y a 4 graines dans chaque case, le but du jeu est de semer puis recolter le maximum de graines. Des que l'un des joueurs en recolte 25 ou plus, il a gagne.\n\n\033[1;34mSEMER :\033[00m\nPour cela, a tour de role, vous choisissez une case de votre plateau et distribuez les graines une par une dans les cases suivantes, dans le sens anti-horaire.\n\n\033[1;34mRECOLTER :\033[00m\nC'est toujours la derniere graine semee qui permet de recolter. Deux conditions doivent etre remplies : \n\t* La derniere graine semee doit etre semee chez l'adversaire.\n\t* Une fois la graine deposee, la case doit contenir exactement 2 ou 3 graines.\nSi la case precedente est toujours chez l'adversaire et contient egalement 2 ou 3 graines, la case est recoltee et ainsi de suite...\nSi un joueur a plus de 12 graines a deposer, il fait le tour du plateau en sautant la case de provenance des graines.\n\n\033[1;34mFIN :\033[00m\nLa partie se termine si : \n\t* L'un des joueurs a recolte au moins 25 graines. \n\t* L'un des joueurs n'a plus de graines sur son plateau. \n\t* Il reste moins de 6 graines sur le plateau. \n\t* Le maximum de coups a jouer est atteint. \n\n\033[1;34mGAGNANT :\033[00m\nCelui qui a le grenier le plus rempli ! \n");
 
@@ -889,25 +869,26 @@ int main()
 	{
 		system("clear");
 	  	printf("\nDEMONSTRATION");
-		printf("\nVoici une petite demonstration qui vous permettra de vous familiariser un peu plus avec le jeu. \n Ceci est le plateau initial : \n");
+		printf("\nVoici une petite demonstration qui vous permettra de vous familiariser un peu plus avec le jeu. \n\n Ceci est le plateau initial : \n");
 	    printf("\n\nORDI \n");
-	    afficher(ordi,N,&grenier_ordi);
+	    afficher(ordi,n,grenier_ordi);
 	    printf("\n");
 	    printf("JOUEUR \n");
-	    afficher(joueur,N,&grenier_joueur);
+	    afficher(joueur,n,grenier_joueur);
 	    printf("\n\n");
 	    nb_coups=6;
 	    while (fj == 1)
 		{
 			//Le tour commence
-			jeu_demo (joueur, ordi, N, &grenier_joueur, &grenier_ordi, compteur, &affichage_nvx_plateau);
-	  compteur++;
-	  		fj =fin_jeu(joueur,ordi,N,&grenier_joueur, &grenier_ordi, compteur,nb_coups);
+			jeu_demo (joueur, ordi, n, grenier_joueur, grenier_ordi, compteur, affichage_nvx_plateau);
+			compteur++;
+	  		fj =fin_jeu(joueur,ordi,n,grenier_joueur, grenier_ordi, compteur,nb_coups);
 	  		if (fj<0)
 	    	{
-	    		raison_fin_jeu(fj,joueur,ordi,N,&grenier_joueur, &grenier_ordi);
+	    		raison_fin_jeu(fj,joueur,ordi,n,grenier_joueur, grenier_ordi);
 	   	 	}
 		}
+		printf("\nLa démonstration est terminée.\n");
 		printf("\n\033[1;34m| Tapez 3 |\033[00m Jouer  \n");
      	printf("\033[1;34m| Tapez 4 |\033[00m Quitter  \n");
 
@@ -922,7 +903,7 @@ int main()
 			{
 	  			if(menu==4)
 	    		{
-	      			return 0;
+	      			return 0 ;
 	    		}
 			}
     } else
@@ -935,7 +916,7 @@ int main()
 				{
 	  				if(menu==4)
 	    			{	
-	      				return 0;
+	      				return 0 ;
 	    			}
 				}
     	}
@@ -947,10 +928,10 @@ int main()
       			printf("\nDEMONSTRATION\n");
      			printf("\nVoici une petite demonstration qui vous permettra de vous familiariser un peu plus avec le jeu. \nCeci est le plateau initial : \n");
       			printf("\n\nORDI \n");
-      			afficher(ordi,N,&grenier_ordi);
+      			afficher(ordi,n,grenier_ordi);
       			printf("\n");
       			printf("JOUEUR \n");
-      			afficher(joueur,N,&grenier_joueur);
+      			afficher(joueur,n,grenier_joueur);
       			printf("\n\n");
 
       			nb_coups=6;
@@ -958,12 +939,12 @@ int main()
       			while (fj == 1)
 				{
 		  			//Le tour commence
-		  			jeu_demo (joueur, ordi, N, &grenier_joueur, &grenier_ordi, compteur, &affichage_nvx_plateau);
+		  			jeu_demo (joueur, ordi, n, grenier_joueur, grenier_ordi, compteur, affichage_nvx_plateau);
 		  			compteur++;
-		  			fj =fin_jeu(joueur,ordi,N,&grenier_joueur, &grenier_ordi, compteur,nb_coups);
+		  			fj =fin_jeu(joueur,ordi,n,grenier_joueur, grenier_ordi, compteur,nb_coups);
 		  			if (fj<0)
 		   			{
-		     			raison_fin_jeu(fj,joueur,ordi,N,&grenier_joueur, &grenier_ordi);
+		     			raison_fin_jeu(fj,joueur,ordi,n,grenier_joueur, grenier_ordi);
 	    			}
 				}
       			printf("\n\033[1;34m| Tapez 3 |\033[00m Jouer  \n");
@@ -980,7 +961,7 @@ int main()
 					{
 	  					if(menu==4)
 	    				{
-	      					return 0;
+	      					return 0 ;
 	    				}
     				}	
       		} else
@@ -993,7 +974,7 @@ int main()
 	  					{
 	    					if(menu==4)
 	      					{
-								return 0;
+								return 0 ;
 	      					} else
 	      						{
 	      							printf("\033[1;31mMerci de saisir un chiffre entre 1 et 4.\033[00m");
@@ -1001,14 +982,30 @@ int main()
 	  					}
       			}
   		}
+}
 
-	//On reinitialise les variables a leurs valeurs de depart
-   	grenier_joueur=0;
-   	grenier_ordi=0;
-   	fj=1;
-   	rejouer=1;
 
-    
+int main()
+{
+	int joueur[N];
+	int ordi[N];
+	int case_joueur;
+	int a, b ;
+	int case_ordi;
+	int grenier_joueur=0;
+	int grenier_ordi=0;
+	int compteur =0 ;
+	int fj=1;
+	int nb_coups ;
+	int rejouer=1;
+	int affichage_nvx_plateau;
+	int menu;
+	char pause;
+	int choix_niveau;
+
+	// Permet à l'utilisateur de choisir s'il veut regarder les règles, voir une démonstration, jouer (choisir le niveau) ou quitter le jeu
+ 	menu_jeu(joueur, ordi, N, &grenier_ordi, &grenier_joueur, nb_coups, fj, compteur, &affichage_nvx_plateau);
+     
     //Le joueur choisit en combien de coups il souhaite faire une partie
 
     while(rejouer==1)
@@ -1055,8 +1052,9 @@ int main()
 		    raison_fin_jeu(fj,joueur,ordi,N,&grenier_joueur, &grenier_ordi);
 		} 
 
-		printf("\nVoulez-vous rejouer ? Si oui tapez 1 sinon tapez 0.\n");
+		printf("\nVoulez-vous rejouer ? Si oui tapez 1 sinon tapez 0.\n\033[1;34mChoix : \033[00m");
 		scanf("%d",&rejouer);
+		printf("\n");
 		fj = 1 ;
 		grenier_joueur=0;
 		grenier_ordi=0;
