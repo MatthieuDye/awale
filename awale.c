@@ -788,7 +788,6 @@ int niveau2(int joueur[], int ordi[], int taille_tab)
 					indice_o--;
 		   		}
 
-		   		printf("A semé et récolté pour la case %d\n", o);
 		   	}
 		   	//Le joueur joue et calcule de la difference de gains : gains_ordi-gains_joueur
     		//Indice d'arrivée dans le tableau ordi
@@ -813,15 +812,6 @@ int niveau2(int joueur[], int ordi[], int taille_tab)
 		ordi[k]=ordi_bis[k];
 	}
 
-	for (int x = 0; x < 6; ++x) 
-	{
-		printf("{");
-		for (int y = 0; y < 6; ++y)
-		{
-			printf("%d\t ", difference_gains[x][y] );
-		}
-		printf("}\n");
-	}
 
 	return max_matrice(difference_gains,taille_tab);
 }
